@@ -7,6 +7,7 @@ import torch
 from tqdm import trange
 
 def get_hessian_avg(model : DenseNN, exp : Experiment) -> float:
+    model = model.to(exp.args["device"])
     params = model.get_params()
     num_params = get_number_of_parameters(model.num_hidden_units)
     jacobian = get_jacobian(model, exp)

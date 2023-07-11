@@ -19,7 +19,7 @@ class Experiment:
         # Initialise models
         self.models : list[DenseNN] = []
         for num in self.args["num_hidden_units"]:
-            self.models.append(DenseNN(num))
+            self.models.append(DenseNN(num).to(self.args["device"]))
 
         if args["param_reuse"]:
             self.last_model_params = None

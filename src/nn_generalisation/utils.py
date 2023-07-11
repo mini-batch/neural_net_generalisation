@@ -47,7 +47,7 @@ def run_with_param_reuse(model : DenseNN,
     """
     if exp.last_model_params != None:
         # Initialise model with transformed weights of previous model
-        exp.last_model_params = extend_params(exp.last_model_params, model.num_hidden_units)
+        exp.last_model_params = extend_params(exp.last_model_params, model.num_hidden_units, exp.args["device"])
         model.set_params(exp.last_model_params)
     exp.experiment_log[f"model_{model.num_hidden_units}"] = train_model(model, exp.train_loader, exp.test_loader, exp.args, exp.log_path)
     exp.last_model_params = model.get_params()

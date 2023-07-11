@@ -8,6 +8,7 @@ import numpy as np
 
 def get_jacobian(model : DenseNN,
                  exp : Experiment) -> tuple[torch.Tensor]:
+    model = model.to(exp.args["device"])
     params = model.get_params()
     loss = get_test_with_grad(model, exp)
     return torch.autograd.grad(loss, params, create_graph=True, retain_graph=True)
