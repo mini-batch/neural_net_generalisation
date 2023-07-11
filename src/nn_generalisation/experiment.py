@@ -25,11 +25,11 @@ class Experiment:
             self.last_model_params = None
 
         self.datetime = get_datetime_str()
-        self.log_path = setup_log_path(self.datetime)
-        setup_log(f"{self.log_path + 'training.log'}")
         self.experiment_log = {"args": args}
 
     def run(self):
+        self.log_path = setup_log_path(self.datetime)
+        setup_log(f"{self.log_path + 'training.log'}")
         for model in tqdm(self.models, desc="Experiment Progress"):
             logging.info(f"{model}")
             if self.args["param_reuse"]:
