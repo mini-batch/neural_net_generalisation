@@ -11,7 +11,7 @@ import numpy as np
 from datetime import datetime
 import os
 import logging
-from tqdm import tqdm, trange
+from tqdm import trange
 
 def train_model(model : DenseNN,
                 train_loader : DataLoader,

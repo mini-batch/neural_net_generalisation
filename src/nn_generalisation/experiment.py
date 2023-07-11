@@ -1,7 +1,6 @@
 from .neural_net.neural_net import DenseNN
 from .data.load_data import get_data
-from .utils import train_model, set_seeds, set_device, get_datetime_str, setup_log_path, run_with_param_reuse, run_without_param_reuse
-from .neural_net.utils import extend_params
+from .utils import set_seeds, set_device, get_datetime_str, setup_log_path, run_with_param_reuse, run_without_param_reuse
 from .logging.metrics import save_json
 from .logging.utils import setup_log
 
