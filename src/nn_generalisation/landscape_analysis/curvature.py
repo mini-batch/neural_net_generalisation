@@ -4,7 +4,7 @@ from ..neural_net.neural_net import DenseNN
 from ..experiment import Experiment 
 
 import torch
-from tqdm import trange
+from tqdm import tqdm
 
 def get_hessian_avg(model : DenseNN, exp : Experiment) -> float:
     model = model.to(exp.args["device"])
@@ -12,8 +12,9 @@ def get_hessian_avg(model : DenseNN, exp : Experiment) -> float:
     num_params = get_number_of_parameters(model.num_hidden_units)
     jacobian = get_jacobian(model, exp)
     jacobian = cat_and_flatten(jacobian)
+    non_zero_indices = torch.nonzero(jacobian, as_tuple=True)[0].tolist()
     avg = 0
-    for i in trange(num_params, desc="Calculate second derivative"):
+    for i in tqdm(non_zero_indices, desc="Calculate second derivative average"):
         curvature_i = cat_and_flatten(torch.autograd.grad(jacobian[i], params, retain_graph=True))
-        avg += torch.mean(torch.abs(curvature_i)).item()
-    return avg / (num_params * num_params)
+        avg += torch.sum(torch.abs(curvature_i))
+    return avg.item() / (num_params * num_params)
