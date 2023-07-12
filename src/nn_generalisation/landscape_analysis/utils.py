@@ -1,7 +1,12 @@
 import torch
+import numpy as np
 
 def cat_and_flatten(input : tuple[torch.Tensor]):
     return torch.cat([torch.flatten(i) for i in input])
+
+def get_mean_abs(input : torch.Tensor) -> float:
+      input = input.numpy(force=True)
+      return np.mean(np.abs(input))
 
 def get_number_of_parameters(num_hidden_units):
 	"""
