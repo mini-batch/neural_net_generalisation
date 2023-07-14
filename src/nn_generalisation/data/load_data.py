@@ -23,9 +23,9 @@ def get_data(args) -> tuple[DataLoader, DataLoader]:
 
     if not args["pre_transfer"]:
         # For use if not transferring to GPU before training loop
-        train_loader = DataLoader(dataset1)
-        test_loader = DataLoader(dataset2)
+        train_loader = DataLoader(dataset1, batch_size=args["batch_size"], shuffle=True)
+        test_loader = DataLoader(dataset2, batch_size=args["test_batch_size"])
     else:
         # Transfer whole datasets to device (i.e. GPU) before training (Faster)
-        train_loader, test_loader = load_data_to_device(dataset1, dataset2, args["device"])
+        train_loader, test_loader = load_data_to_device(dataset1, dataset2, args)
     return train_loader, test_loader
