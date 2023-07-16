@@ -15,11 +15,13 @@ def get_data(args) -> tuple[DataLoader, DataLoader]:
             torch.flatten
             ])
 
+    data_rng = np.random.RandomState(args["data_seed"])
+
     dataset1 = datasets.MNIST('./mnist_data', train=True, download=True,
                     transform=transform, target_transform=transforms.Compose([one_hot_transform]))
     dataset2 = datasets.MNIST('./mnist_data', train=False, download=True,
                     transform=transform, target_transform=transforms.Compose([one_hot_transform]))
-    dataset1 = Subset(dataset1, np.random.choice(len(dataset1), args["train_size"], replace=False))
+    dataset1 = Subset(dataset1, data_rng.choice(len(dataset1), args["train_size"], replace=False))
 
     if not args["pre_transfer"]:
         # For use if not transferring to GPU before training loop
