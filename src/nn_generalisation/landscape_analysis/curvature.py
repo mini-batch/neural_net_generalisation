@@ -13,8 +13,8 @@ def get_hessian_avg(model : DenseNN, exp : Experiment) -> float:
     jacobian = get_jacobian(model, exp)
     jacobian = cat_and_flatten(jacobian)
     non_zero_indices = torch.nonzero(jacobian, as_tuple=True)[0].tolist()
-    avg = 0
+    running_sum = 0
     for i in tqdm(non_zero_indices, desc="Calculate second derivative average"):
         curvature_i = cat_and_flatten(torch.autograd.grad(jacobian[i], params, retain_graph=True))
-        avg += torch.sum(torch.abs(curvature_i))
-    return avg.item() / (num_params * num_params)
+        running_sum += torch.sum(torch.abs(curvature_i))
+    return running_sum.item() / (num_params * num_params)

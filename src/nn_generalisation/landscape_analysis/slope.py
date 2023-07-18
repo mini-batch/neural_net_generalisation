@@ -1,10 +1,15 @@
 from ..neural_net.neural_net import DenseNN
 from ..experiment import Experiment
+from .utils import get_mean_abs, cat_and_flatten
 
 import torch
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 import numpy as np
+
+def get_jacobian_avg(model : DenseNN,
+                     exp : Experiment) -> float:
+    return get_mean_abs(cat_and_flatten(get_jacobian(model, exp)))
 
 def get_jacobian(model : DenseNN,
                  exp : Experiment) -> tuple[torch.Tensor]:
