@@ -1,4 +1,4 @@
-from ..neural_net.neural_net import DenseNN
+from ..neural_net import DenseNN
 from ..experiment import Experiment
 from .utils import get_mean_abs, cat_and_flatten
 

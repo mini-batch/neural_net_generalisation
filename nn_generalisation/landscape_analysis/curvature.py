@@ -1,6 +1,6 @@
-from .slope import get_jacobian, get_test_with_grad
+from .slope import get_jacobian
 from .utils import cat_and_flatten, get_number_of_parameters
-from ..neural_net.neural_net import DenseNN
+from ..neural_net import DenseNN
 from ..experiment import Experiment 
 
 import torch
