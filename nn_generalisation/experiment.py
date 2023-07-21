@@ -59,7 +59,7 @@ def train_model(model : neural_net.DenseNN,
     if args["loss_fn"] == "mse":
         loss_fn = MSELoss(reduction="sum")
     else:
-        raise Experiment("Specified loss function was not valid")
+        raise Exception(f"Specified loss function '{args['loss_fn']}' was not valid. Options: 'mse'.")
     for epoch in trange(args["epochs"], desc=f"Model with {model.num_hidden_units} hidden units training progress"):
         train_loss = neural_net.train(model, train_loader, optimizer, loss_fn, args)
         test_loss = neural_net.test(model, test_loader, loss_fn, args)
