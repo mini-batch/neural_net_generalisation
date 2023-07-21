@@ -4,8 +4,6 @@ from .utils import get_mean_abs, cat_and_flatten
 
 import torch
 import torch.nn.functional as F
-import matplotlib.pyplot as plt
-import numpy as np
 
 def get_jacobian_avg(model : DenseNN,
                      exp : Experiment) -> float:
