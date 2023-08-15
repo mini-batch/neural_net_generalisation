@@ -48,7 +48,7 @@ def train(model : DenseNN,
     for batch_idx, (data, target) in enumerate(train_loader):
         if not args["pre_transfer"]:
             data, target = data.to(args["device"]), target.to(args["device"])
-        optimizer.zero_grad()
+        model.zero_grad()
         output = model(data)
         loss = loss_fn(output, target) / len(data)
         epoch_loss += loss * len(data)
