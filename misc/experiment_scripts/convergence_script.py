@@ -1,3 +1,4 @@
+import argparse
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
@@ -106,9 +107,9 @@ def get_data(args) -> tuple[DataLoader, DataLoader]:
             ])
     data_rng = np.random.RandomState(args["data_seed"])
 
-    dataset1 = datasets.MNIST('./mnist_data', train=True, download=True,
+    dataset1 = datasets.MNIST('../mnist_data', train=True, download=True,
                     transform=transform, target_transform=transforms.Compose([one_hot_transform]))
-    dataset2 = datasets.MNIST('./mnist_data', train=False, download=True,
+    dataset2 = datasets.MNIST('../mnist_data', train=False, download=True,
                     transform=transform, target_transform=transforms.Compose([one_hot_transform]))
     dataset1 = Subset(dataset1, data_rng.choice(len(dataset1), args["train_size"], replace=False))
     if not args["pre_transfer"]:
@@ -346,29 +347,65 @@ def train_and_get_metrics(model : DenseNN,
     }
     return output
 
-args = {
-    "seed": 1,
-    "data_seed": 2147483647,
-    "train_size": 4000,
-    "batch_size": 64,
-    "test_batch_size": 1000,
-    "pre_transfer": True,
-    "epochs": 20000,
-    "lr": 0.001,
-    "momentum": 0.95,
-    "gamma": 0.9,
-    "loss_fn": "mse",
-}
+# args = {
+#     "seed": 1,
+#     "data_seed": 2147483647,
+#     "train_size": 4000,
+#     "batch_size": 64,
+#     "test_batch_size": 1000,
+#     "pre_transfer": True,
+#     "epochs": 20000,
+#     "lr": 0.001,
+#     "momentum": 0.95,
+#     "gamma": 0.9,
+#     "loss_fn": "mse",
+# }
+
+# CLI inputs:
+
+# 1.
+# python convergence_script.py --seed 1 --data-seed 2147483647 --hidden-units 20 30 40 50 60 70 80 90 100
+# ^ Vary seed 1 - 5 for a given data-seed
+# 
+# 2.
+# Then change data-seed and repeat, e.g.
+# python convergence_script.py --seed 1 --data-seed 2147483648 --hidden-units 20 30 40 50 60 70 80 90 100
+# 
+# Hence, will have 5 runs for each size model for 5 different data seeds.
+# Run (1) first for 5 different seeds (5 diff prompts), then repeat for other data-seeds
+
 
 if __name__ == "__main__":
-    for num_hidden_units in [100]:#, 40, 60, 80, 100, 120, 140]:
+    parser = argparse.ArgumentParser(description='Belkin double descent reproduction')
+    parser.add_argument('--seed', type=int, default=1, metavar='S',
+                        help='random seed (default: 1)')
+    parser.add_argument('--data-seed', type=int, default=2147483647,
+                        help='random seed for train dataset selection (default: 1)')
+    parser.add_argument('--hidden-units', nargs="*", type=int, default=52, metavar='N',
+                        help='number of nodes within hidden layer (default: 52)')
+    cli_args = parser.parse_args()
+    if type(cli_args.hidden_units) == int:
+        cli_args.hidden_units = [cli_args.hidden_units]
+
+    for i, num_hidden_units in enumerate(cli_args.hidden_units):#, 40, 60, 80, 100, 120, 140]:
+        args = {
+            "seed": cli_args.seed,
+            "data_seed": cli_args.data_seed,
+            "train_size": 4000,
+            "batch_size": 64,
+            "test_batch_size": 1000,
+            "pre_transfer": True,
+            "epochs": 10,
+            "lr": 0.001,
+            "momentum": 0.95,
+            "gamma": 0.9,
+            "loss_fn": "mse",
+        }
         experiment_log, args, log_path, train_loader, test_loader = setup_exp(args)
-        #start_model = load_model(60, r"./log/weight_convergence_tests/2023-08-15_09;07;40/model_size_60_14999_epochs.pt").to(args["device"])
         model = DenseNN(num_hidden_units).to(args["device"])
-        #model.set_params(extend_params(start_model.get_params(), num_hidden_units, args["device"]))
         optimizer = optim.SGD(model.parameters(), lr=args["lr"], momentum=args["momentum"])
         loss_fn = MSELoss(reduction="sum")
         # SET START/END AT STEADY STATE
-        experiment_log[f"model_{model.num_hidden_units}"] = train_and_get_metrics(model, train_loader, test_loader, optimizer, loss_fn, args, log_path, True, 0)
+        experiment_log[f"model_{model.num_hidden_units}"] = train_and_get_metrics(model, train_loader, test_loader, optimizer, loss_fn, args, log_path, False, -1)
         args.pop("device")
         save_json(experiment_log, f"{log_path + 'experiment_log'}.json")
