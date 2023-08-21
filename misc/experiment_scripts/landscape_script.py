@@ -406,7 +406,7 @@ if __name__ == "__main__":
         "test_batch_size": 1000,
         "pre_transfer": True,
         "epochs": 50000,
-        "lr": 0.001,
+        "lr": 0.1,
         "momentum": 0.95,
         "gamma": 0.9,
         "loss_fn": "mse",
