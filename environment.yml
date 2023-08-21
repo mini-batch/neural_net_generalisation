@@ -1,0 +1,13 @@
+name: double_descent
+channels:
+ - pytorch
+ - nvidia
+ - defaults
+dependencies:
+ - python = 3.10
+ - numpy = 1.23
+ - pytorch = 2.0
+ - torchvision = 0.15
+ - pytorch-cuda = 11.8
+ - matplotlib = 3.5
+ - tqdm = 4.65
