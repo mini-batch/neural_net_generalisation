@@ -160,9 +160,9 @@ def load_data_to_device(train_dataset, test_dataset, args):
     test_loader = DataLoader(TensorDataset(images, labels), batch_size=args["test_batch_size"], shuffle=True, generator=test_rng)
     return train_loader, test_loader
 
-def setup_log_path(datetime : str) -> str:
-    os.makedirs(f"./log/{datetime}/", exist_ok = True)
-    return f"./log/{datetime}/"
+def setup_log_path(datetime : str, args : dict) -> str:
+    os.makedirs(f"./log/dataseed_{args['data_seed']}/seed_{args['seed']}/{datetime}/", exist_ok = True)
+    return f"./log/dataseed_{args['data_seed']}/seed_{args['seed']}/{datetime}/"
 
 def setup_log(path : str) -> None:
     logging.basicConfig(filename=path,
@@ -223,7 +223,7 @@ def setup_exp(args) -> tuple[dict, dict, str, DataLoader, DataLoader]:
     set_seeds(args["seed"])
     args = set_device(args)
     exp_datetime = get_datetime_str()
-    log_path = setup_log_path(exp_datetime)
+    log_path = setup_log_path(exp_datetime, args)
     setup_log(f"{log_path + 'training.log'}")
     train_loader, test_loader = get_data(args)
     return experiment_log, args, log_path, train_loader, test_loader
@@ -395,7 +395,7 @@ if __name__ == "__main__":
             "batch_size": 64,
             "test_batch_size": 1000,
             "pre_transfer": True,
-            "epochs": 10,
+            "epochs": 20000,
             "lr": 0.001,
             "momentum": 0.95,
             "gamma": 0.9,

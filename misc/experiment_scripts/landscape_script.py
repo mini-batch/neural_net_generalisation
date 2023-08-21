@@ -166,9 +166,9 @@ def load_data_to_device(train_dataset, test_dataset, args):
     test_loader = DataLoader(TensorDataset(images, labels), batch_size=args["test_batch_size"], shuffle=True, generator=test_rng)
     return train_loader, test_loader
 
-def setup_log_path(datetime : str) -> str:
-    os.makedirs(f"./log/{datetime}/", exist_ok = True)
-    return f"./log/{datetime}/"
+def setup_log_path(datetime : str, args : dict) -> str:
+    os.makedirs(f"./log/landscape/dataseed_{args['data_seed']}/startseed_{args['start_model_seed']}/seed_{args['seed']}/{datetime}/", exist_ok = True)
+    return f"./log/landscape/dataseed_{args['data_seed']}/startseed_{args['start_model_seed']}/seed_{args['seed']}/{datetime}/"
 
 def setup_log(path : str) -> None:
     logging.basicConfig(filename=path,
@@ -229,7 +229,7 @@ def setup_exp(args) -> tuple[dict, dict, str, DataLoader, DataLoader]:
     set_seeds(args["seed"])
     args = set_device(args)
     exp_datetime = get_datetime_str()
-    log_path = setup_log_path(exp_datetime)
+    log_path = setup_log_path(exp_datetime, args)
     setup_log(f"{log_path + 'training.log'}")
     train_loader, test_loader = get_data(args)
     return experiment_log, args, log_path, train_loader, test_loader
@@ -380,7 +380,7 @@ def train_and_get_metrics(model : DenseNN,
 #endregion
 
 # CLI input
-# python landscape_script.py --seed 1 --data-seed 2147483647 --start-model "./blah/blah/start_model.pt"
+# python landscape_script.py --seed 1 --data-seed 2147483647 --start-model-seed 1 --start-model ./log/dataseed_2147483647/seed_1/2023-08-20_12;18;02/model_size_20_19999_epochs.pt
 # ^Must use same dataseed as start_model. Vary seed 1-5
 # 
 # Repeat for different starting models: 5 per data seed, 5 different data seeds. 
@@ -393,24 +393,26 @@ if __name__ == "__main__":
                         help='random seed (default: 1)')
     parser.add_argument('--data-seed', type=int, default=2147483647,
                         help='random seed for train dataset selection (default: 1)')
+    parser.add_argument('--start-model-seed', type=int, default=1)
     parser.add_argument('--start-model', type=str)
     cli_args = parser.parse_args()
 
     args = {
         "seed": cli_args.seed,
         "data_seed": cli_args.data_seed,
+        "start_model_seed": cli_args.start_model_seed,
         "train_size": 4000,
         "batch_size": 64,
         "test_batch_size": 1000,
         "pre_transfer": True,
         "epochs": 50000,
-        "lr": 0.01,
+        "lr": 0.001,
         "momentum": 0.95,
         "gamma": 0.9,
         "loss_fn": "mse",
     }
 
-    for num_hidden_units in [20, 25, 30, 35, 40, 45, 50, 51, 55, 60, 80, 100, 120, 140]:
+    for num_hidden_units in [20, 25, 30, 35, 40, 45, 50, 51, 55, 60, 80, 100, 120]:
         experiment_log, args, log_path, train_loader, test_loader = setup_exp(args)
         start_model = load_model(20, cli_args.start_model).to(args["device"])
         model = DenseNN(num_hidden_units).to(args["device"])

@@ -24,3 +24,16 @@ dataseed: 2147483652
 - These will be used as starting models.
 
 For each start_model for each dataseed, run landscape analysis 5 times (with seeds 1-5).
+
+
+Notes after 20/8/23:
+Convergence:
+    - Have completed first dataseed: 2147483647
+    - Partially done second dataseed: 2147483648
+        - Still need to do 50 80 120
+    Example: python convergence_script.py --seed 1 --data-seed 2147483648 --hidden-units 20 40 50 80 120
+
+Landscape:
+    - Almost finished runs for first start model from dataseed 2147483647, seed 1.
+
+Execution note: running too much on one pc does appear to significantly slow training even if cpu, memory etc aren't that near max. 
