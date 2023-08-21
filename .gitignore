@@ -2,3 +2,4 @@ __pycache__/
 log/
 mnist_data/
 nn_generalisation.egg-info/
+/misc/experiment_scripts/results/
