@@ -402,7 +402,7 @@ if __name__ == "__main__":
         "data_seed": cli_args.data_seed,
         "start_model_seed": cli_args.start_model_seed,
         "train_size": 4000,
-        "batch_size": 64,
+        "batch_size": 4000,
         "test_batch_size": 1000,
         "pre_transfer": True,
         "epochs": 50000,

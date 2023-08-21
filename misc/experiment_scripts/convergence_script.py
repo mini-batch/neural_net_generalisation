@@ -392,7 +392,7 @@ if __name__ == "__main__":
             "seed": cli_args.seed,
             "data_seed": cli_args.data_seed,
             "train_size": 4000,
-            "batch_size": 64,
+            "batch_size": 4000,
             "test_batch_size": 1000,
             "pre_transfer": True,
             "epochs": 20000,
